@@ -1,7 +1,4 @@
 """
-Utilitaire de filtrage du corpus pour Youssef.
-Retourne une liste de phrases (texte brut) selon les critères voulus.
-
 Usage :
     from scripts.filtrer_corpus import filtrer
 

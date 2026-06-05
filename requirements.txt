@@ -1,0 +1,4 @@
+spacy>=3.8
+transformers>=5.0
+torch>=2.12
+numpy>=1.24

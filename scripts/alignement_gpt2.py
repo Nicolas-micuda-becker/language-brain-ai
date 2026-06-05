@@ -1,3 +1,9 @@
+"""
+Usage:
+    python scripts/alignement_gpt2.py
+    python scripts/alignement_gpt2.py --source maupassant_horla --limit 50
+    python scripts/alignement_gpt2.py --model antoiloui/gpt2-french
+"""
 
 from __future__ import annotations
 

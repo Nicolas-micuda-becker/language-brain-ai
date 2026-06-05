@@ -100,6 +100,14 @@ Chaque entrée est une phrase avec :
 - Modèle conseillé : `asi/gpt-fr-cased-small` (public) ou un autre GPT-2 français accessible
 - Exemple : `python scripts/alignement_gpt2.py --source maupassant_horla --limit 50`
 
+### Étape 3 — Extraction des embeddings
+
+- Script principal : `scripts/extraction_embeddings_gpt2.py`
+- Rôle : charger l'alignement et extraire le dernier hidden state de GPT-2
+- Sortie : `output/gpt2_embeddings.jsonl`
+- Dépendances : `torch`, `transformers`
+- Exemple : `python scripts/extraction_embeddings_gpt2.py --limit 1`
+
 ---
 
 ## Notes techniques
@@ -108,3 +116,4 @@ Chaque entrée est une phrase avec :
 - **Représentation d'un mot** : moyenne des embeddings des sous-mots BPE qui le composent
 - **ID minimale** : il faut au moins ~20 vecteurs pour un estimateur fiable — ne pas calculer sur moins d'une dizaine de tokens
 - **Couche** : dernière couche cachée de GPT-2 (hidden states)
+- **Installation minimale** : `pip install -r requirements.txt` puis `python -m spacy download fr_core_news_sm`

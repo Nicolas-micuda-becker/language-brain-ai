@@ -7,5 +7,9 @@ venv/
 .idea/
 *.egg-info/
 corpus/processed/corpus_alignement_gpt2.json
+<<<<<<< HEAD
 output/
 *.npz
+=======
+output/gpt2_embeddings.jsonl
+>>>>>>> 5cdd0c0 (Etape 3)

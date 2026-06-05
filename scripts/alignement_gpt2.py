@@ -10,6 +10,21 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+<<<<<<< HEAD
+"""
+Usage:
+    python scripts/alignement_gpt2.py
+    python scripts/alignement_gpt2.py --source maupassant_horla --limit 50
+    python scripts/alignement_gpt2.py --model antoiloui/gpt2-french
+"""
+=======
+>>>>>>> 5cdd0c0 (Etape 3)
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
 from typing import Any
 
 from transformers import GPT2TokenizerFast

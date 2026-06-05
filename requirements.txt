@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 spacy>=3.8
 transformers>=5.0
 torch>=2.12
 numpy>=1.24
+=======
+spacy>=3.8,<4
+transformers>=5.0,<6
+torch>=2.12,<3
+>>>>>>> 5cdd0c0 (Etape 3)

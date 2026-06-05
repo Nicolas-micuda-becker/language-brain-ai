@@ -6,3 +6,4 @@ venv/
 .vscode/
 .idea/
 *.egg-info/
+corpus/processed/corpus_alignement_gpt2.json

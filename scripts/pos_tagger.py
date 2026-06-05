@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 import spacy
 
-nlp = spacy.load("fr_core_news_md")
+nlp = spacy.load("fr_core_news_sm")
 
 POS_CIBLES = {"VERB", "NOUN", "ADJ", "ADV"}
 

@@ -92,6 +92,14 @@ Chaque entrée est une phrase avec :
 - Graphiques et visualisations
 - Observations et conclusions pour chaque test (voir `TESTS.md`)
 
+### Étape 2 — Tokenisation & Alignement
+
+- Script principal : `scripts/alignement_gpt2.py`
+- Rôle : aligner les mots annotés du corpus avec les sous-mots BPE de GPT-2
+- Sortie : `corpus/processed/corpus_alignement_gpt2.json`
+- Modèle conseillé : `asi/gpt-fr-cased-small` (public) ou un autre GPT-2 français accessible
+- Exemple : `python scripts/alignement_gpt2.py --source maupassant_horla --limit 50`
+
 ---
 
 ## Notes techniques

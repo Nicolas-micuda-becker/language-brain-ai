@@ -12,7 +12,6 @@ import spacy
 
 nlp = spacy.load("fr_core_news_md")
 
-# POS qu'on suit (tags universels spaCy)
 POS_CIBLES = {"VERB", "NOUN", "ADJ", "ADV"}
 
 RAW_DIR = Path(__file__).parent.parent / "corpus" / "raw"
@@ -22,13 +21,11 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def nettoyer_texte(texte: str) -> str:
     """Supprime les en-têtes Gutenberg et normalise les espaces."""
-    # Supprime le header/footer Gutenberg standard
     for marqueur in ["*** START OF", "*** END OF", "Project Gutenberg"]:
         idx = texte.find(marqueur)
         if idx != -1:
             texte = texte[idx:]
             break
-    # Normalise les sauts de ligne multiples
     texte = re.sub(r"\n{3,}", "\n\n", texte)
     texte = re.sub(r"[ \t]+", " ", texte)
     return texte.strip()
@@ -76,7 +73,6 @@ def tagger_fichier(chemin: Path) -> list[dict]:
     texte = nettoyer_texte(texte)
 
     resultats = []
-    # spaCy a une limite de taille — on découpe par paragraphes
     paragraphes = [p.strip() for p in texte.split("\n\n") if len(p.strip()) > 20]
 
     for para in paragraphes:
@@ -85,7 +81,6 @@ def tagger_fichier(chemin: Path) -> list[dict]:
             texte_phrase = sent.text.strip()
             if len(texte_phrase) < 10:
                 continue
-            # Filtre bruit : headers Gutenberg, marqueurs de dates, lignes parasites
             if "***" in texte_phrase:
                 continue
             if re.match(r"^_\d+\s+\w+[\._]", texte_phrase):
@@ -97,7 +92,6 @@ def tagger_fichier(chemin: Path) -> list[dict]:
             n_mots = len(tokens_lex)
             if n_mots < 3:
                 continue
-            # Filtre : trop peu de tokens alphabétiques (ligne de symboles ou bruit)
             alpha = sum(1 for t in tokens_lex if t.is_alpha)
             if alpha / n_mots < 0.5:
                 continue
@@ -105,7 +99,6 @@ def tagger_fichier(chemin: Path) -> list[dict]:
             ratios = calculer_ratios_pos(sent)
             dom = categorie_dominante(ratios)
 
-            # Détail token-level : texte + pos + lemme
             tokens_detail = [
                 {"texte": t.text, "lemme": t.lemma_, "pos": t.pos_}
                 for t in sent
@@ -141,15 +134,12 @@ def main():
         print(f"{len(phrases)} phrases")
         toutes_phrases.extend(phrases)
 
-        # Sauvegarde par fichier source
         sortie = OUT_DIR / f"{fichier.stem}_tagged.json"
         sortie.write_text(json.dumps(phrases, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # Sauvegarde globale
     sortie_globale = OUT_DIR / "corpus_complet.json"
     sortie_globale.write_text(json.dumps(toutes_phrases, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # Stats rapides
     print(f"\nTotal : {len(toutes_phrases)} phrases")
     from collections import Counter
     cats = Counter(p["dominante"] for p in toutes_phrases)

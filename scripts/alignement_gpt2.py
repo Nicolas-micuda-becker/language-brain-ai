@@ -1,18 +1,3 @@
-"""
-Alignement GPT-2 / corpus annoté pour l'etape 2 du projet.
-
-Ce script lit le corpus deja annote (corpus_complet.json), recupere la
-tokenisation GPT-2 avec les offsets caracteres, puis associe chaque mot du
-corpus aux sous-mots BPE correspondants.
-
-La sortie produit un JSON exploitable pour l'extraction des embeddings à
-l'etape 3.
-
-Usage:
-    python scripts/alignement_gpt2.py
-    python scripts/alignement_gpt2.py --source maupassant_horla --limit 50
-    python scripts/alignement_gpt2.py --model antoiloui/gpt2-french
-"""
 
 from __future__ import annotations
 

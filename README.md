@@ -1,119 +1,78 @@
-# Projet ID — Dimensionnalité Intrinsèque & Morphosyntaxe
+# Projet — Dimensionnalité Intrinsèque & Morphosyntaxe française
 
-## Structure du projet
+Analyse de la dimensionnalité intrinsèque (ID) des représentations de GPT-2 sur un corpus littéraire français (Gutenberg), en fonction de la composition morphosyntaxique des phrases (VERB, NOUN, ADJ, ADV).
 
-```
-projet_ID/
-├── corpus/
-│   ├── raw/                  # Textes bruts Gutenberg (.txt)
-│   └── processed/
-│       ├── corpus_complet.json        # TOUT le dataset — point d'entrée principal
-│       ├── baudelaire_fleurs_mal_tagged.json
-│       ├── maupassant_horla_tagged.json
-│       ├── maupassant_boule_de_suif_tagged.json
-│       ├── moliere_avare_tagged.json
-│       ├── verlaine_oeuvres_tagged.json
-│       └── lafontaine_fables_tagged.json
-├── scripts/
-│   ├── pos_tagger.py         # Pipeline spaCy — génère le dataset (Nicolas)
-│   └── filtrer_corpus.py     # Utilitaire de filtrage — point d'entrée pour Youssef
-├── output/                   # Tes graphiques et résultats vont ici (Youssef)
-├── TESTS.md                  # Liste des observations à produire
-└── README.md                 # Ce fichier
+## Installation
+
+```bash
+pip install -r requirements.txt
+python -m spacy download fr_core_news_md
 ```
 
----
+## Structure
 
-## Le dataset — `corpus_complet.json`
-
-12 513 phrases issues de 6 textes littéraires français (Gutenberg).
-Chaque entrée est une phrase avec :
-
-```json
-{
-  "source": "baudelaire_fleurs_mal",
-  "phrase": "Homme libre, toujours tu chériras la mer!",
-  "n_mots": 7,
-  "longueur": "courte",
-  "ratios_pos": {
-    "VERB": 0.1429,
-    "NOUN": 0.2857,
-    "ADJ": 0.1429,
-    "ADV": 0.0
-  },
-  "dominante": "NOUN",
-  "tokens": [
-    {"texte": "Homme", "lemme": "homme", "pos": "NOUN"},
-    {"texte": "libre", "lemme": "libre", "pos": "ADJ"},
-    ...
-  ]
-}
+```
+corpus/raw/          textes bruts Gutenberg (.txt)
+corpus/processed/    corpus POS-taggé (JSON)
+scripts/             tout le code
+output/              résultats des tests
+RESULTATS.md         observations et conclusions
+TESTS.md             liste des tests à faire
 ```
 
-### Champs utiles
+## Le dataset
 
-| Champ | Description |
-|---|---|
-| `source` | Fichier d'origine (= auteur/texte) |
-| `longueur` | `courte` (≤8 mots) / `moyenne` (9-18) / `longue` (>18) |
-| `ratios_pos` | Ratio continu 0→1 pour VERB, NOUN, ADJ, ADV |
-| `dominante` | Catégorie majoritaire (ou `mixte`) |
-| `tokens` | Détail token par token avec lemme et POS tag spaCy |
+12 513 phrases françaises issues de Baudelaire, Verlaine, Maupassant, Molière, La Fontaine.
+Chaque phrase a : son texte, sa source, sa longueur (courte/moyenne/longue), ses ratios POS (VERB/NOUN/ADJ/ADV), sa catégorie dominante, ses tokens avec lemme et POS.
 
-### Distribution
+Fichier principal : `corpus/processed/corpus_complet.json`
 
-| Dominante | Phrases |
-|---|---|
-| mixte | 5076 |
-| NOUN | 3869 |
-| VERB | 2632 |
-| ADV | 576 |
-| ADJ | 360 |
+## Pipeline — dans l'ordre
 
----
+**1. POS-tagging** (déjà fait, ne pas relancer sauf nouveau corpus)
+```bash
+python scripts/pos_tagger.py
+```
+Lit les .txt de corpus/raw/, produit corpus_complet.json
 
-## Répartition des tâches
+**2. Alignement BPE**
+```bash
+python scripts/alignement_gpt2.py
+python scripts/alignement_gpt2.py --source baudelaire_fleurs_mal --limit 150
+```
+Aligne les mots spaCy avec les sous-mots BPE de GPT-2.
+Produit : corpus/processed/corpus_alignement_gpt2.json
 
-### Youssef — GPT-2, Embeddings & ID
+**3. Extraction des embeddings**
+```bash
+python scripts/extraction_embeddings_gpt2.py
+python scripts/extraction_embeddings_gpt2.py --source moliere_avare --limit 150 --output output/emb_moliere.jsonl
+```
+Passe les phrases dans GPT-2, récupère les vecteurs (dim 768).
+Produit : output/gpt2_embeddings.jsonl
 
-1. Charger les phrases via `scripts/filtrer_corpus.py`
-2. Importer GPT-2 français et extraire les embeddings (dernière couche cachée)
-3. Représenter chaque mot par la moyenne de ses sous-mots BPE
-4. Implémenter l'estimateur d'ID (Two-NN ou MLE)
-5. Calculer l'ID pour chaque sous-corpus retourné par `filtrer_corpus.py`
-6. Sauvegarder les résultats bruts (valeurs d'ID) dans `output/`
-7. Rédaction du rapport
+**4. Calcul de l'ID**
+```bash
+python scripts/calcul_id.py --echelle phrase --dominante VERB
+python scripts/calcul_id.py --echelle phrase --longueur courte
+python scripts/calcul_id.py --echelle phrase --source baudelaire_fleurs_mal
+```
+Calcule l'ID (Two-NN + MLE) sur le nuage de vecteurs filtré.
+Produit : output/resultats_id.jsonl (une ligne par run)
 
----
+## Filtres disponibles pour les étapes 3 et 4
 
-### Nicolas — Outputs, Agrégation & Analyse
+```
+--source      nom du fichier source (ex: baudelaire_fleurs_mal)
+--dominante   VERB / NOUN / ADJ / ADV / mixte
+--longueur    courte / moyenne / longue
+--limit       nombre max de phrases
+```
 
-- Comparaisons moyenne / médiane des ID par groupe
-- Graphiques et visualisations
-- Observations et conclusions pour chaque test (voir `TESTS.md`)
+## Décisions techniques
 
-### Étape 2 — Tokenisation & Alignement
-
-- Script principal : `scripts/alignement_gpt2.py`
-- Rôle : aligner les mots annotés du corpus avec les sous-mots BPE de GPT-2
-- Sortie : `corpus/processed/corpus_alignement_gpt2.json`
-- Modèle conseillé : `asi/gpt-fr-cased-small` (public) ou un autre GPT-2 français accessible
-- Exemple : `python scripts/alignement_gpt2.py --source maupassant_horla --limit 50`
-
-### Étape 3 — Extraction des embeddings
-
-- Script principal : `scripts/extraction_embeddings_gpt2.py`
-- Rôle : charger l'alignement et extraire le dernier hidden state de GPT-2
-- Sortie : `output/gpt2_embeddings.jsonl`
-- Dépendances : `torch`, `transformers`
-- Exemple : `python scripts/extraction_embeddings_gpt2.py --limit 1`
-
----
-
-## Notes techniques
-
-- **Modèle GPT-2 recommandé** : `antoiloui/gpt2-french` ou `asi/gpt-fr-cased-small` sur HuggingFace
-- **Représentation d'un mot** : moyenne des embeddings des sous-mots BPE qui le composent
-- **ID minimale** : il faut au moins ~20 vecteurs pour un estimateur fiable — ne pas calculer sur moins d'une dizaine de tokens
-- **Couche** : dernière couche cachée de GPT-2 (hidden states)
-- **Installation minimale** : `pip install -r requirements.txt` puis `python -m spacy download fr_core_news_sm`
+- AUX fusionné dans VERB (auxiliaires = verbes fonctionnels)
+- Seuil dominance : 0.25 pour VERB/NOUN, 0.15 pour ADJ/ADV
+- Représentation d'un mot = moyenne des sous-mots BPE
+- Couche GPT-2 = dernière couche cachée (hidden states[-1])
+- Estimateur minimum : 20 vecteurs requis

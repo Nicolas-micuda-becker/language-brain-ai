@@ -1,26 +1,19 @@
-"""
-POS-tagging pipeline pour corpus littéraire français (Gutenberg).
-Input  : fichiers .txt dans corpus/raw/
-Output : fichiers .json dans corpus/processed/ — une entrée par phrase
-         avec texte, POS tags, ratios, longueur et catégorie dominante.
-"""
-
 import json
 import re
 from pathlib import Path
 import spacy
 
-nlp = spacy.load("fr_core_news_sm")
+nlp = spacy.load("fr_core_news_md")
 
 POS_CIBLES = {"VERB", "NOUN", "ADJ", "ADV"}
+SEUILS_DOMINANCE = {"VERB": 0.25, "NOUN": 0.25, "ADJ": 0.15, "ADV": 0.15}
 
 RAW_DIR = Path(__file__).parent.parent / "corpus" / "raw"
 OUT_DIR  = Path(__file__).parent.parent / "corpus" / "processed"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def nettoyer_texte(texte: str) -> str:
-    """Supprime les en-têtes Gutenberg et normalise les espaces."""
+def nettoyer_texte(texte):
     for marqueur in ["*** START OF", "*** END OF", "Project Gutenberg"]:
         idx = texte.find(marqueur)
         if idx != -1:
@@ -31,10 +24,8 @@ def nettoyer_texte(texte: str) -> str:
     return texte.strip()
 
 
-def calculer_ratios_pos(doc_sent) -> dict:
-    """Calcule le ratio de chaque POS sur les tokens lexicaux (sans ponctuation/espaces).
-    AUX est fusionné dans VERB (auxiliaires = verbes fonctionnels)."""
-    tokens_lex = [t for t in doc_sent if not t.is_punct and not t.is_space]
+def calculer_ratios_pos(sent):
+    tokens_lex = [t for t in sent if not t.is_punct and not t.is_space]
     total = len(tokens_lex)
     if total == 0:
         return {}
@@ -46,11 +37,7 @@ def calculer_ratios_pos(doc_sent) -> dict:
     return {pos: round(c / total, 4) for pos, c in compteurs.items()}
 
 
-SEUILS_DOMINANCE = {"VERB": 0.25, "NOUN": 0.25, "ADJ": 0.15, "ADV": 0.15}
-
-def categorie_dominante(ratios: dict) -> str:
-    """Retourne le POS dominant si son ratio dépasse le seuil par catégorie, sinon 'mixte'.
-    Seuil ADJ abaissé à 0.15 car les adjectifs dépassent rarement 25% en français naturel."""
+def categorie_dominante(ratios):
     if not ratios:
         return "vide"
     dominant = max(ratios, key=ratios.get)
@@ -58,20 +45,17 @@ def categorie_dominante(ratios: dict) -> str:
     return dominant if ratios[dominant] >= seuil else "mixte"
 
 
-def longueur_categorie(n_mots: int) -> str:
+def longueur_categorie(n_mots):
     if n_mots <= 8:
         return "courte"
     elif n_mots <= 18:
         return "moyenne"
-    else:
-        return "longue"
+    return "longue"
 
 
-def tagger_fichier(chemin: Path) -> list[dict]:
-    """Traite un fichier texte et retourne la liste des phrases annotées."""
+def tagger_fichier(chemin):
     texte = chemin.read_text(encoding="utf-8", errors="ignore")
     texte = nettoyer_texte(texte)
-
     resultats = []
     paragraphes = [p.strip() for p in texte.split("\n\n") if len(p.strip()) > 20]
 
@@ -97,21 +81,17 @@ def tagger_fichier(chemin: Path) -> list[dict]:
                 continue
 
             ratios = calculer_ratios_pos(sent)
-            dom = categorie_dominante(ratios)
-
             tokens_detail = [
                 {"texte": t.text, "lemme": t.lemma_, "pos": t.pos_}
-                for t in sent
-                if not t.is_space
+                for t in sent if not t.is_space
             ]
-
             resultats.append({
                 "source": chemin.stem,
                 "phrase": texte_phrase,
                 "n_mots": n_mots,
                 "longueur": longueur_categorie(n_mots),
                 "ratios_pos": ratios,
-                "dominante": dom,
+                "dominante": categorie_dominante(ratios),
                 "tokens": tokens_detail,
             })
 
@@ -121,36 +101,28 @@ def tagger_fichier(chemin: Path) -> list[dict]:
 def main():
     fichiers = list(RAW_DIR.glob("*.txt"))
     if not fichiers:
-        print(f"Aucun fichier .txt trouvé dans {RAW_DIR}")
-        print("Dépose tes fichiers Gutenberg dans corpus/raw/ puis relance.")
+        print(f"Aucun fichier .txt dans {RAW_DIR}")
         return
 
-    print(f"{len(fichiers)} fichier(s) trouvé(s) dans corpus/raw/\n")
-
+    print(f"{len(fichiers)} fichier(s) trouve(s)\n")
     toutes_phrases = []
+
     for fichier in fichiers:
-        print(f"  Traitement : {fichier.name} ...", end=" ", flush=True)
+        print(f"  {fichier.name} ...", end=" ", flush=True)
         phrases = tagger_fichier(fichier)
         print(f"{len(phrases)} phrases")
         toutes_phrases.extend(phrases)
-
         sortie = OUT_DIR / f"{fichier.stem}_tagged.json"
         sortie.write_text(json.dumps(phrases, ensure_ascii=False, indent=2), encoding="utf-8")
 
     sortie_globale = OUT_DIR / "corpus_complet.json"
     sortie_globale.write_text(json.dumps(toutes_phrases, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print(f"\nTotal : {len(toutes_phrases)} phrases")
     from collections import Counter
-    cats = Counter(p["dominante"] for p in toutes_phrases)
-    lons = Counter(p["longueur"] for p in toutes_phrases)
-    print("\nDistribution par catégorie dominante :")
-    for cat, n in cats.most_common():
-        print(f"  {cat:10s} : {n:5d} ({100*n/len(toutes_phrases):.1f}%)")
-    print("\nDistribution par longueur :")
-    for lon, n in lons.most_common():
-        print(f"  {lon:10s} : {n:5d} ({100*n/len(toutes_phrases):.1f}%)")
-    print(f"\nRésultats sauvegardés dans {OUT_DIR}")
+    print(f"\nTotal : {len(toutes_phrases)} phrases")
+    for cat, n in Counter(p["dominante"] for p in toutes_phrases).most_common():
+        print(f"  {cat:10s} : {n}")
+    print(f"\nSauvegarde : {OUT_DIR}")
 
 
 if __name__ == "__main__":

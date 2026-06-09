@@ -1,3 +1,4 @@
 {"echelle": "phrase", "source": null, "dominante": "VERB", "longueur": null, "n_vecteurs": 102, "dim": 768, "two_nn": 14.3115, "mle": 23.8654}
 {"echelle": "phrase", "source": null, "dominante": "NOUN", "longueur": null, "n_vecteurs": 62, "dim": 768, "two_nn": 9.3979, "mle": 22.5226}
 {"echelle": "phrase", "source": null, "dominante": "mixte", "longueur": null, "n_vecteurs": 119, "dim": 768, "two_nn": 22.0146, "mle": 27.7124}
+{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 1290, "dim": 768, "two_nn": 3.5254, "mle": Infinity}

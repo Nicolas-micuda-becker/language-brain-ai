@@ -72,10 +72,10 @@ def mle(X, k=5):
     id_locales = []
     for i in range(len(X)):
         dk = distances[i, k]
-        if dk == 0:
+        if dk <= 0:
             continue
         dj = distances[i, 1:k]
-        dj = dj[dj > 0]
+        dj = dj[(dj > 0) & (dj < dk)]
         if len(dj) == 0:
             continue
         id_locales.append(1.0 / np.mean(np.log(dk / dj)))

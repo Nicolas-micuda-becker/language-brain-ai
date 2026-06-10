@@ -8,3 +8,4 @@ venv/
 *.egg-info/
 corpus/processed/corpus_alignement_gpt2.json
 output/gpt2_embeddings.jsonl
+tests/results/

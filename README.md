@@ -9,6 +9,8 @@ pip install -r requirements.txt
 python -m spacy download fr_core_news_md
 ```
 
+Si vous utilisez un environnement virtuel, activez-le avant d'exécuter les scripts (`python` doit pointer vers votre environnement local).
+
 ## Structure
 
 ```

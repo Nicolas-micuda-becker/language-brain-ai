@@ -7,8 +7,8 @@ Fichiers principaux:
 Commande utile (WSL):
 
 ```bash
-cd /mnt/e/cours/AAL3S2/tuteuré/language-brain-ai
-/home/yjaafri/language-brain-ai-venv/bin/python scripts/calcul_id.py --echelle phrase --estimateur les_deux --limit 50
+cd /chemin/vers/language-brain-ai
+python scripts/calcul_id.py --echelle phrase --estimateur les_deux --limit 50
 ```
 
 Sorties attendues:

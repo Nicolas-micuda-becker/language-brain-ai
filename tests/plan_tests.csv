@@ -1,0 +1,9 @@
+id,description,echelle,filtre_pos,filtre_longueur,complexite,metriques,taille_echantillon,notes
+T1,ID vs longueur de phrase,phrase,,courte/moyenne/longue,,Two-NN|MLE,>=100/bin,"courte <5; moyenne 5-12; longue >12"
+T2,ID vs POS dominant,phrase,NOUN|VERB|ADJ|mixte,,,Two-NN|MLE,>=100/categorie,"Dominante = POS le plus frequent"
+T3,ID vs complexite syntaxique,phrase,,,,Two-NN|MLE,>=100/condition,"Complexite via propositions ou profondeur"
+T4,Agregation mot -> phrase,phrase,,,,mean|median,all,"Comparer moyenne vs mediane"
+T5,ID paragraphe vs longueur,paragraphe,,,,Two-NN|MLE,>=50/bucket,"Bucketiser par nombre de phrases"
+T6,Comparaison corpus A/B/C,document,,,,ANOVA|t-test,selon corpus,"Significativite entre genres"
+T7,Robustesse MLE,mot|phrase,,,,MLE diagnostics,all,"Filtrer distances nulles"
+T8,Echelle multi-niveaux,multi,,,,Two-NN|MLE,all,"Mot -> phrase -> paragraphe"

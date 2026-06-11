@@ -20,3 +20,10 @@ Agrégation des résultats:
 # depuis la racine du dépôt (WSL)
 python3 scripts/aggregate_results.py
 ```
+
+Validation statistique:
+
+```bash
+# comparaison A/B/C sur les embeddings de phrase disponibles
+python3 scripts/validate_statistical_difference.py --bootstrap 100 --sample-size 150
+```

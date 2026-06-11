@@ -1,9 +1,9 @@
-{"echelle": "phrase", "source": null, "dominante": "VERB", "longueur": null, "n_vecteurs": 102, "dim": 768, "two_nn": 14.3115, "mle": 23.8654}
-{"echelle": "phrase", "source": null, "dominante": "NOUN", "longueur": null, "n_vecteurs": 62, "dim": 768, "two_nn": 9.3979, "mle": 22.5226}
-{"echelle": "phrase", "source": null, "dominante": "mixte", "longueur": null, "n_vecteurs": 119, "dim": 768, "two_nn": 22.0146, "mle": 27.7124}
-{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 1290, "dim": 768, "two_nn": 3.5254, "mle": Infinity}
-{"echelle": "phrase", "source": null, "dominante": null, "longueur": "courte", "n_vecteurs": 25, "dim": 768, "two_nn": 10.5701, "mle": 27.0043}
-{"echelle": "phrase", "source": null, "dominante": null, "longueur": "moyenne", "n_vecteurs": 25, "dim": 768, "two_nn": 31.2465, "mle": 32.6288}
-{"echelle": "phrase", "source": null, "dominante": null, "longueur": "longue", "n_vecteurs": 25, "dim": 768, "two_nn": 21.2218, "mle": 19.1083}
-{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 1061, "dim": 768, "mle": Infinity}
-{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 1061, "dim": 768, "mle": 17.0686}
+{"echelle": "phrase", "source": null, "dominante": null, "longueur": "courte", "n_vecteurs": 50, "dim": 768, "two_nn": 11.6249, "mle": 21.0077}
+{"echelle": "phrase", "source": null, "dominante": null, "longueur": "moyenne", "n_vecteurs": 50, "dim": 768, "two_nn": 19.8008, "mle": 27.8875}
+{"echelle": "phrase", "source": null, "dominante": null, "longueur": "longue", "n_vecteurs": 50, "dim": 768, "two_nn": 17.0628, "mle": 21.6003}
+{"echelle": "phrase", "source": null, "dominante": "NOUN", "longueur": null, "n_vecteurs": 50, "dim": 768, "two_nn": 10.5053, "mle": 25.8908}
+{"echelle": "phrase", "source": null, "dominante": "VERB", "longueur": null, "n_vecteurs": 50, "dim": 768, "two_nn": 13.5149, "mle": 22.477}
+{"echelle": "phrase", "source": null, "dominante": "ADJ", "longueur": null, "n_vecteurs": 50, "dim": 768, "two_nn": 23.5299, "mle": 21.7582}
+{"echelle": "phrase", "source": null, "dominante": "mixte", "longueur": null, "n_vecteurs": 50, "dim": 768, "two_nn": 17.6799, "mle": 22.5846}
+{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 4011, "dim": 768, "mle": 17.8891}
+{"echelle": "mot", "source": null, "dominante": null, "longueur": null, "n_vecteurs": 4011, "dim": 768, "mle": 17.8891}

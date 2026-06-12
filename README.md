@@ -18,8 +18,7 @@ corpus/raw/          textes bruts Gutenberg (.txt)
 corpus/processed/    corpus POS-taggé (JSON)
 scripts/             tout le code
 output/              résultats des tests
-RESULTATS.md         observations et conclusions
-TESTS.md             liste des tests à faire
+tests/               plan de tests, runner et validation
 ```
 
 ## Le dataset

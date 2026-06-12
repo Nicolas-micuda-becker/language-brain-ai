@@ -27,3 +27,9 @@ Validation statistique:
 # comparaison A/B/C sur les embeddings de phrase disponibles
 python3 scripts/validate_statistical_difference.py --bootstrap 100 --sample-size 150
 ```
+
+Visualisations:
+
+```bash
+python3 scripts/generate_figures.py
+```

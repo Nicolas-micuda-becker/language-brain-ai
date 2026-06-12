@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exécution simple des tests T1/T2/T7 pour l'étape 5."""
+"""T1/T2/T7"""
 
 from __future__ import annotations
 

@@ -31,7 +31,7 @@ def verifier_tokenisation(entree, tokenizer):
     ids_attendus = [item["id"] for item in entree["bpe_tokens"]]
     ids_reels = tokenizer(entree["phrase"], add_special_tokens=False)["input_ids"]
     if ids_reels != ids_attendus:
-        raise ValueError("Tokenisation differente du fichier d'alignement — regenerer l'etape 2.")
+        raise ValueError("Tokenisation differente du fichier alignement")
 
 
 def extraire_phrase(entree, model, tokenizer, layer_index):
@@ -44,7 +44,7 @@ def extraire_phrase(entree, model, tokenizer, layer_index):
         outputs = model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True, return_dict=True)
 
     if outputs.hidden_states is None:
-        raise RuntimeError("Le modele n'a pas retourne de hidden states.")
+        raise RuntimeError("Le modele a pas retourne de hidden states")
 
     couche = outputs.hidden_states[layer_index][0]
     mots = []
@@ -114,7 +114,7 @@ def main():
             f.write(json.dumps(extraire_phrase(entree, model, tokenizer, args.layer), ensure_ascii=False) + "\n")
             total += 1
 
-    print(f"Phrases traitees : {total}")
+    print(f"Phrases traites : {total}")
     print(f"Sortie : {args.output}")
 
 

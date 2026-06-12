@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregate ID/results JSONL and CSV outputs into a single CSV and optional .npz.
 
-Usage:
-  python scripts/aggregate_results.py
-
-It looks for:
- - output/resultats_id.jsonl
- - tests/results/*.csv
-
-Outputs:
- - output/aggregated_id_results.csv
- - output/aggregated_id_results.npz  (if numeric fields found)
-"""
 import json
 import csv
 import glob
@@ -46,12 +34,12 @@ def main():
     os.makedirs("output", exist_ok=True)
     rows = []
 
-    # Read JSONL results
+    #JSONL
     for obj in read_jsonl("output/resultats_id.jsonl"):
         if isinstance(obj, dict):
             rows.append(obj)
 
-    # Read CSVs under tests/results/
+    #CSV
     for fn in sorted(glob.glob("tests/results/*.csv")):
         for r in read_csv_rows(fn):
             rows.append(r)
@@ -60,7 +48,7 @@ def main():
         print("No results found to aggregate.")
         return
 
-    # unify headers
+    # unify
     headers = []
     for r in rows:
         for k in r.keys():
@@ -76,7 +64,7 @@ def main():
 
     print(f"Wrote {len(rows)} rows to {out_csv}")
 
-    # Try to save numeric arrays to .npz
+    #npz
     numeric_fields = [h for h in headers if any(h.lower().startswith(x) for x in ("id","two_nn","mle","score","value"))]
     arrays = {}
     for field in numeric_fields:

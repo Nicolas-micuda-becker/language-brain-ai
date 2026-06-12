@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
-"""Generate stage-8 figures from the validated outputs.
 
-Outputs are written to `output/figures/`.
-Figures generated:
-- `id_by_length_two_nn.png`
-- `id_by_length_mle.png`
-- `id_by_pos_two_nn.png`
-- `id_by_pos_mle.png`
-- `validation_ab_c_two_nn.png`
-- `validation_ab_c_mle.png`
-- `mle_diagnostics.png`
-"""
 
 from __future__ import annotations
 

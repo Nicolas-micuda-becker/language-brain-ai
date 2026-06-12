@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-"""Validation statistique pour l'étape 7.
-
-Le script compare trois corpus A/B/C définis par défaut comme suit :
-- A = poésie (Baudelaire + Verlaine)
-- B = théâtre (Molière)
-- C = fable (La Fontaine)
-
-Il travaille sur les fichiers `output/emb_*.jsonl` déjà générés et produit :
-- `output/statistical_validation.csv`
-- `output/statistical_validation.json`
-
-La stratégie utilisée est un bootstrap sur les embeddings de phrase, puis :
-- ANOVA à un facteur entre les trois groupes
-- t-tests de Welch par paires
-"""
 
 from __future__ import annotations
 
@@ -112,9 +97,9 @@ def summarize(values: list[float]) -> dict[str, float]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validation statistique des corpus A/B/C.")
-    parser.add_argument("--bootstrap", type=int, default=100, help="Nombre de rééchantillonnages bootstrap.")
-    parser.add_argument("--sample-size", type=int, default=150, help="Taille d'échantillon par bootstrap et par groupe.")
+    parser = argparse.ArgumentParser(description="Validation statistique corpus A/B/C.")
+    parser.add_argument("--bootstrap", type=int, default=100, help="Nombre de reechantillonnages bootstrap.")
+    parser.add_argument("--sample-size", type=int, default=150, help="Taille échantillon par bootstrap/ groupe.")
     parser.add_argument("--seed", type=int, default=42, help="Graine aléatoire.")
     args = parser.parse_args()
 
@@ -122,7 +107,7 @@ def main() -> None:
     for source_name in {source for sources in DEFAULT_GROUPS.values() for source in sources}:
         vectors = load_phrase_embeddings(OUTPUT_DIR / f"emb_{source_name}.jsonl")
         if not vectors:
-            raise FileNotFoundError(f"Aucun embedding trouvé pour {source_name!r}.")
+            raise FileNotFoundError(f"Aucun embedding trouvé por {source_name!r}.")
         source_cache[source_name] = vectors
 
     group_vectors: dict[str, list[list[float]]] = {}
@@ -135,7 +120,7 @@ def main() -> None:
     smallest_group = min(len(vectors) for vectors in group_vectors.values())
     sample_size = min(args.sample_size, smallest_group)
     if sample_size < 20:
-        raise ValueError(f"Taille d'échantillon trop faible: {sample_size}.")
+        raise ValueError(f"Taille échantillon trop faible: {sample_size}.")
 
     bootstraps: dict[str, dict[str, list[float]]] = {}
     for group_name, vectors in group_vectors.items():

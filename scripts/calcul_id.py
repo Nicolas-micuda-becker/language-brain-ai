@@ -47,7 +47,7 @@ def construire_nuage(entrees, echelle):
         raise ValueError(f"Echelle inconnue : {echelle!r}")
 
     if len(vecteurs) < 20:
-        raise ValueError(f"Seulement {len(vecteurs)} vecteurs — minimum 20 requis.")
+        raise ValueError(f"Seulement {len(vecteurs)} vecteurs, minimum 20 requis.")
     return np.array(vecteurs, dtype=np.float32)
 
 
